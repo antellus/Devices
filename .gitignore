@@ -1,0 +1,5 @@
+libraries/*
+LED_RGB_Arduino/.vs/*
+LED_RGB_Arduino/__vm/*
+LED_RGB_Arduino/Debug/*
+LED_RGB_Arduino/LED_RGB_Arduino.vcxproj.filters
