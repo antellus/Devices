@@ -80,7 +80,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="LED_RGB_Arduino.h" />
     <ClInclude Include="LED_RGB.h" />
     <ClInclude Include="MQTT_Reader.h" />
     <ClInclude Include="Pin_Definition.h" />
