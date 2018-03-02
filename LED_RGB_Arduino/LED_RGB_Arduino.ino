@@ -43,6 +43,6 @@ void loop() {
 	// reader waits on timeout for incoming packets
 	char* value = reader.read(5000);
 	
-	// handle the feed value, i.e., setRgb, fade, etc.
+	// handle the feed value, i.e., NULL, setRgb, fade, etc.
 	ledrgb.cmdHandler(value);
 }

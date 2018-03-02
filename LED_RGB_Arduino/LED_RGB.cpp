@@ -13,13 +13,13 @@ void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB)
 	g = pinG;
 	b = pinB;
 	
-	// default last mode from feed
+	// default last cmd
 	lastCmd = CM_fade;  
 
 	// default rgb
 	lastRgb = { 0, 0, 0 };
 
-	// set color sequence
+	// set color sequence - memory is limited, so use ints instead of strings
 	addNode({ 0,0,0xff });     //blue   #0000ff      255 - start the circle
 	addNode({ 0xff,0,0xff });  //violet #ff00ff 16711935
 	addNode({ 0xff,0,0 });     //red    #ff0000 16711680
@@ -28,7 +28,7 @@ void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB)
 	addNode({ 0,0xff,0xff });  //teal   #00ffff    65535- end the circle
 }
 
-// Command handler for the specified value
+// Command handler for the specified value, maps feed data to a command
 void LED_RGB::cmdHandler(char* val) {
 	// handle new or existing state command
 	Serial.println(F("Handling cmd"));
@@ -154,7 +154,7 @@ void LED_RGB::addNode(Rgb val) {
 		lastNode->next = lastNode;
 	}
 	else {
-		// swap next pointers
+		// more than one node, rearrange pointers for circular ref
 		node->next = lastNode->next;
 		lastNode->next = node;
 		lastNode = node;

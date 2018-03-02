@@ -21,5 +21,19 @@
     <ClInclude Include="__vm\.PIR_Arduino.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Pin_Definition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Secrets.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MQTT_Writer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MQTT_Writer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
