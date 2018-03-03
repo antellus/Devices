@@ -9,7 +9,7 @@
 // mqtt writer
 MQTT_Writer writer;
 
-// state change
+// default state change
 byte state = LOW;
 
 // arduino setup runs once per power up
@@ -45,9 +45,9 @@ void loop()
 	if (digitalRead(P_Pir) != state) {
 		state = !state;
 		digitalWrite(P_Led, state);
-		Serial.println((state) ? F("Motion Detected!") : F("Motion Not Detected!"));
+		Serial.println((state) ? F("Motion Detected!") : F("Motion Ended!"));
 		
 		bool published = writer.write(state);
-		Serial.println((published) ? F("Published to feed!") : F("Failed to publish!"));
+		Serial.println((published) ? F("Published!") : F("Failed to publish!"));
 	}
 }
