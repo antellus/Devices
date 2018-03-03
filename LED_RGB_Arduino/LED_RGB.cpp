@@ -20,15 +20,17 @@ void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB)
 	lastRgb = { 0, 0, 0 };
 
 	// set color sequence - memory is limited, so use ints instead of strings
-	addNode({ 0,0,0xff });     //blue   #0000ff      255 - start the circle
-	addNode({ 0xff,0,0xff });  //violet #ff00ff 16711935
-	addNode({ 0xff,0,0 });     //red    #ff0000 16711680
-	addNode({ 0xff,0xff,0 });  //yellow #ffff00 16776960
-	addNode({ 0,0xff,0 });     //green  #00ff00    65280
-	addNode({ 0,0xff,0xff });  //teal   #00ffff    65535- end the circle
+	// circular linked list where starting node is blue
+	addNode({ 0x00,0x00,0xff });  //blue   #0000ff      255 - start the circle
+	addNode({ 0xff,0x00,0xff });  //violet #ff00ff 16711935
+	addNode({ 0xff,0x00,0x00 });  //red    #ff0000 16711680
+	addNode({ 0xff,0xff,0x00 });  //yellow #ffff00 16776960
+	addNode({ 0x00,0xff,0x00 });  //green  #00ff00    65280
+	addNode({ 0x00,0xff,0xff });  //teal   #00ffff    65535- end the circle
 }
 
-// Command handler for the specified value, maps feed data to a command
+// Command handler for the specified value, maps feed data to a command,
+// Designed to be called in the main loop for running state
 void LED_RGB::cmdHandler(char* val) {
 	// handle new or existing state command
 	Serial.println(F("Handling cmd"));
@@ -41,11 +43,11 @@ void LED_RGB::cmdHandler(char* val) {
 	else if ((val[0] == CM_fade) || (lastCmd == CM_fade && isNull(val))) {
 		fade();
 		lastCmd = CM_fade;
-	}
+	} // up requires U char
 	else if (val[0] == CM_up) {
 		up();
 		lastCmd = CM_up;
-	}
+	} // down requires D char
 	else if (val[0] == CM_dn) {
 		down();
 		lastCmd = CM_dn;
@@ -72,7 +74,7 @@ void LED_RGB::setRgb(Rgb val) {
 	fade(b, lastRgb.b, val.b);
 }
 
-// Fades pins in a circular list, initializes to blue
+// Fades pins in a circular list
 void LED_RGB::fade() {
 	// next color in sequence
 	lastNode = lastNode->next;
