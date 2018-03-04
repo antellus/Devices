@@ -4,9 +4,9 @@
 void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB)
 {
 	// set pin mode
-	pinMode(pinR, INPUT);
-	pinMode(pinG, INPUT);
-	pinMode(pinB, INPUT);
+	pinMode(pinR, OUTPUT);
+	pinMode(pinG, OUTPUT);
+	pinMode(pinB, OUTPUT);
 	
 	// set pin definition
 	r = pinR;
