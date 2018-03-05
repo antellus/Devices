@@ -97,7 +97,7 @@ void LED_RGB::fade(uint8_t pin, uint8_t from, uint8_t to) {
 	setlast(pin, from);
 }
 
-// Increases non zero, no max value by MULTI to max 
+// Increases non zero, non max value by MULTI to max 
 uint8_t LED_RGB::up(uint8_t val) {
 	return (val > 0 && val < 0xff) ? min(val * MULTI, 0xff) : val;
 }

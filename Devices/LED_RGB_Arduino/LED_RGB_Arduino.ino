@@ -1,16 +1,17 @@
 // local references
-#include "MQTT_Writer.h"
-#include "Pin_Definition.h"
+#include "LED_RGB_Arduino.h"
+#include "LED_RGB.h"
+#include "MQTT_Reader.h"
 
 // external libraries
 #include <SPI.h>
 #include <WiFi101.h>
 
-// mqtt writer
-MQTT_Writer writer;
+// led rgb handler
+LED_RGB ledrgb;
 
-// default state change
-byte state = LOW;
+// mqtt reader
+MQTT_Reader reader;
 
 // arduino setup runs once per power up
 void setup() {
@@ -30,24 +31,18 @@ void setup() {
 	}
 	Serial.println(F("ATWINC OK!"));
 
-	// init pins
-	pinMode(P_Led, OUTPUT);
-	pinMode(P_Pir, INPUT);
+	// init led rgb controller
+	ledrgb.init(P_R, P_G, P_B);
 
-	// init the mqtt writer
-	writer.init();
+	// init the mqtt reader
+	reader.init();
 }
 
 // arduino loop runs continuously
-void loop()
-{
-	// publish state changes
-	if (digitalRead(P_Pir) != state) {
-		state = !state;
-		digitalWrite(P_Led, state);
-		Serial.println((state) ? F("Motion Detected!") : F("Motion Ended!"));
-		
-		bool published = writer.write(state);
-		Serial.println((published) ? F("Published!") : F("Failed to publish!"));
-	}
+void loop() {
+	// reader waits on timeout for incoming packets
+	char* value = reader.read(5000);
+	
+	// handle the feed value, i.e., NULL, setRgb, fade, etc.
+	ledrgb.cmdHandler(value);
 }

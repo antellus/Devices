@@ -1,6 +1,4 @@
-#include "Secrets.h"
-#include "MQTT_Writer.h"
-#include <Adafruit_MQTT_Client.h>
+#include "MQTT_Reader.h"
 
 // wifi client
 WiFiClient* wifi;
@@ -9,21 +7,23 @@ WiFiClient* wifi;
 Adafruit_MQTT_Client* mqtt;
 
 // mqtt feed
-Adafruit_MQTT_Publish* feed;
+Adafruit_MQTT_Subscribe* feed;
 
-// initializes the MQTT_writer class
-void MQTT_Writer::init()
+// initializes the MQTT_reader class
+void MQTT_Reader::init()
 {
 	// int wifi, mqtt and subscription
 	wifi = new WiFiClient();
 	mqtt = new Adafruit_MQTT_Client(wifi, AIO_SERVER, AIO_SERVERPORT, AIO_CID, AIO_USERNAME, AIO_KEY);
-	feed = new Adafruit_MQTT_Publish(mqtt, AIO_USERNAME AIO_PATH);
+	feed = new Adafruit_MQTT_Subscribe(mqtt, AIO_USERNAME AIO_PATH);
 
+	// set subscriptions
+	mqtt->subscribe(feed);
 	connect();
 }
 
 // Connect board to wifi and mqtt, waits indefinitely until connected
-void MQTT_Writer::connect()
+void MQTT_Reader::connect()
 {
 	int8_t result;
 
@@ -56,14 +56,24 @@ void MQTT_Writer::connect()
 	Serial.println(F("Connected!"));
 }
 
-bool MQTT_Writer::write(bool val)
+char* MQTT_Reader::read(uint16_t timeout)
 {
+	char result[20] = { '\0' };
+
 	// handle incoming feed from mqtt
-	Serial.println(F("Writing..."));
+	Serial.println(F("Reading..."));
 
 	// re-connect wifi and mqtt if needed
 	connect();
 
-	// publishes value to mqtt
-	return feed->publish((uint32_t)val);
+	// waits for incoming packets for 5 seconds on this subscription
+	while (Adafruit_MQTT_Subscribe *subscription = mqtt->readSubscription(timeout)) {
+		if (subscription == feed) {
+			Serial.println((char*)feed->lastread);
+			strcpy(result, (char*)feed->lastread);
+			break;
+		}
+	}
+
+	return result;
 }

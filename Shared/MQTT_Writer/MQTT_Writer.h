@@ -1,8 +1,7 @@
 #pragma once
-
-#pragma once
 #include <Adafruit_MQTT_Client.h>
 #include <WiFi101.h>
+#include "Secrets.h"
 
 // MQTT_writer.h
 #ifndef _MQTT_WRITER_h
@@ -17,13 +16,13 @@
 // mqtt writer class for publishing feed values to the server
 class MQTT_Writer
 {
-private:
-	WiFiClient* wifi;
-	Adafruit_MQTT_Client* mqtt;
-	Adafruit_MQTT_Publish* feed;
-	void connect();
-public:
-	void init();
-	bool write(bool val);
+	private:
+		WiFiClient* wifi;
+		Adafruit_MQTT_Client* mqtt;
+		Adafruit_MQTT_Publish* feed;
+		void connect();
+	public:
+		void init();
+		bool write(bool val);
 };
 #endif

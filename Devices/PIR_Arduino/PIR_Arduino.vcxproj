@@ -35,6 +35,12 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
+  <ImportGroup Label="Shared">
+    <Import Project="..\..\libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems" Label="Shared" />
+    <Import Project="..\..\shared\MQTT_Writer\MQTT_Writer.vcxitems" Label="Shared" />
+    <Import Project="..\..\Shared\Secrets\Secrets.vcxitems" Label="Shared" />
+    <Import Project="..\..\libraries\WiFi101\WiFi101.vcxitems" Label="Shared" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -48,7 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\PIR_Arduino;$(ProjectDir)..\libraries\Adafruit_MQTT_Library;$(ProjectDir)..\libraries\WiFi101\src;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SPI\src;$(ProjectDir)..\libraries\WiFi101\src\utility;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\libraries;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;$(ProjectDir)..\libraries;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include\;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include\avr\;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\PIR_Arduino;$(ProjectDir)..\..\libraries\Adafruit_MQTT_Library;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SPI\src;$(ProjectDir)..\..\libraries\WiFi101\src;$(ProjectDir)..\..\libraries\WiFi101\src\utility;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\libraries;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;$(ProjectDir)..\..\libraries;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\variants\standard;$(ProjectDir)..\..\libraries\WiFi101\src\bsp\include;$(ProjectDir)..\..\libraries\WiFi101\src\bsp\source;$(ProjectDir)..\..\libraries\WiFi101\src\bus_wrapper\include;$(ProjectDir)..\..\libraries\WiFi101\src\bus_wrapper\source;$(ProjectDir)..\..\libraries\WiFi101\src\common\include;$(ProjectDir)..\..\libraries\WiFi101\src\common\source;$(ProjectDir)..\..\libraries\WiFi101\src\driver\include;$(ProjectDir)..\..\libraries\WiFi101\src\driver\source;$(ProjectDir)..\..\libraries\WiFi101\src\socket\include;$(ProjectDir)..\..\libraries\WiFi101\src\socket\source;$(ProjectDir)..\..\libraries\WiFi101\src\spi_flash\include;$(ProjectDir)..\..\libraries\WiFi101\src\spi_flash\source;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include\;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include\avr\;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ProjectDir)__vm\.PIR_Arduino.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <PreprocessorDefinitions>__AVR_ATmega328p__;__AVR_ATmega328P__;_VMDEBUG=1;F_CPU=16000000L;ARDUINO=10805;ARDUINO_AVR_UNO;ARDUINO_ARCH_AVR;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -80,13 +86,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MQTT_Writer.h" />
-    <ClInclude Include="Pin_Definition.h" />
-    <ClInclude Include="Secrets.h" />
+    <ClInclude Include="PIR_Arduino.h" />
     <ClInclude Include="__vm\.PIR_Arduino.vsarduino.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="MQTT_Writer.cpp" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>

@@ -2,7 +2,7 @@
 
 // Wifi credentials
 #define W_SSID "ssid"
-#define W_PASS "password"  
+#define W_PASS "pass"  
 
 // Mqtt server credentials
 #define AIO_SERVER      "io.adafruit.com"

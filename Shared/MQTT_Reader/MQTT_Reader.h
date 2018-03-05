@@ -1,6 +1,7 @@
 #pragma once
 #include <Adafruit_MQTT_Client.h>
 #include <WiFi101.h>
+#include "Secrets.h"
 
 // MQTT_reader.h
 #ifndef _MQTT_READER_h
@@ -25,3 +26,4 @@ class MQTT_Reader
 		char* read(uint16_t timeout);
 };
 #endif
+
