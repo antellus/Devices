@@ -16,7 +16,7 @@
 #define AIO_SERVERPORT  1883
 #define AIO_USERNAME    "username"
 #define AIO_KEY         "key"
-#define AIO_CID         "ffaa00"
+#define AIO_CID         "cid"
 #define AIO_PATH        "/feeds/feed"
 
 #endif
