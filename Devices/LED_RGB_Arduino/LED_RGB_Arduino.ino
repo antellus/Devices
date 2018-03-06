@@ -2,6 +2,7 @@
 #include "LED_RGB_Arduino.h"
 #include "LED_RGB.h"
 #include "MQTT_Reader.h"
+#include "Utility.h"
 
 // external libraries
 #include <SPI.h>
@@ -43,6 +44,12 @@ void loop() {
 	// reader waits on timeout for incoming packets
 	char* value = reader.read(5000);
 	
-	// handle the feed value, i.e., NULL, setRgb, fade, etc.
-	ledrgb.cmdHandler(value);
+	if (!isNull(value)) {
+		// handle the feed value: F, U, D, #ffffff
+		ledrgb.cmdHandler(value);
+	}
+	else{
+		// resumes the current state: fade, flash, etc
+		ledrgb.resume();
+	}
 }

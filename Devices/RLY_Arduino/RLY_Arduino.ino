@@ -2,6 +2,7 @@
 #include "RLY.h"
 #include "RLY_Arduino.h"
 #include "MQTT_Reader.h"
+#include "Utility.h"
 
 // external libraries
 #include <SPI.h>
@@ -43,7 +44,7 @@ void loop() {
 	// reader waits on timeout for incoming packets
 	char* value = reader.read(5000);
 
-	if (value != NULL && value[0] != '\0') {
+	if (!isNull(value)) {
 		// handle the feed value 0 or 1 expected
 		relay.cmdHandler(value);
 	}

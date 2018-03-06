@@ -1,8 +1,7 @@
 #include "LED_RGB.h"
 
 // Inits the LED RGB controller
-void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB)
-{
+void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB){
 	// set pin mode
 	pinMode(pinR, OUTPUT);
 	pinMode(pinG, OUTPUT);
@@ -30,8 +29,7 @@ void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB)
 }
 
 // Command handler for the specified value, maps feed data to a command,
-// Designed to be called in the main loop for running state
-void LED_RGB::cmdHandler(char* val) {
+CmdType LED_RGB::cmdHandler(char* val) {
 	// handle new or existing state command
 	Serial.println(F("Handling cmd"));
 
@@ -39,8 +37,8 @@ void LED_RGB::cmdHandler(char* val) {
 	if (val[0] == CM_hex) {
 		setRgb(val);
 		lastCmd = CM_hex;
-	} // fade requires an F char or continuation from lastmode
-	else if ((val[0] == CM_fade) || (lastCmd == CM_fade && isNull(val))) {
+	} // requires F char
+	else if (val[0] == CM_fade) {
 		fade();
 		lastCmd = CM_fade;
 	} // up requires U char
@@ -51,6 +49,22 @@ void LED_RGB::cmdHandler(char* val) {
 	else if (val[0] == CM_dn) {
 		down();
 		lastCmd = CM_dn;
+	}
+
+	return lastCmd;
+}
+
+// Resumes continues a command. Designed to be called in the main loop for running state
+void LED_RGB::resume() {
+	Serial.print(F("Resuming...")); Serial.println(lastCmd);
+
+	switch (lastCmd) {
+	case CM_fade:
+		fade();
+		break;
+	default:
+		break;
+
 	}
 }
 

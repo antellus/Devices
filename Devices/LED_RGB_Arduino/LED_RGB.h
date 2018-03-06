@@ -9,12 +9,11 @@
 	#include "WProgram.h"
 #endif
 
+#include "Utility.h"
+
 // operating constants
 #define FADESPEED 5    // millis fade delay
 #define MULTI 1.50     // increase/decrease brightness multiplier
-
-// null check macro
-#define isNull(a) (a == NULL || a[0] == '\0') ? true : false
 
 // struct for storing red, green blue 
 struct Rgb { uint8_t r; uint8_t g; uint8_t b; };
@@ -45,7 +44,8 @@ class LED_RGB
 		uint8_t down(uint8_t val);
 	public:
 		void init(uint8_t pinR, uint8_t pinG, uint8_t pinB);
-		void cmdHandler(char* val);
+		CmdType cmdHandler(char* val);
+		void resume();
 		void setRgb(unsigned long val);
 		void setRgb(char* val);
 		void setRgb(Rgb val);

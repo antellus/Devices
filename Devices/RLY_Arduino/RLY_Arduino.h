@@ -1,3 +1,5 @@
+#define RLY_Arudino
+
 // pinout
 enum PinDef : uint8_t {
 	// Relay switch
