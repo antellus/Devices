@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LED_RGB_Arduino", "Devices\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PIR_Arduino", "Devices\PIR_Arduino\PIR_Arduino.vcxproj", "{E089CE27-F482-4D1A-897C-039A3B927D09}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Utility", "Shared\Utility\Utility.vcxitems", "{6A7F197A-93C7-4421-A7EF-A67B27B5D8CF}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		libraries\WiFi101\WiFi101.vcxitems*{2a6f8cca-d1d0-4ba8-8c2a-0a22a123a925}*SharedItemsImports = 9
@@ -36,14 +38,17 @@ Global
 		Shared\Secrets\Secrets.vcxitems*{77375c2a-9a81-4f86-b14a-cf57a375d25e}*SharedItemsImports = 9
 		libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
 		Shared\Secrets\Secrets.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
+		Shared\Utility\Utility.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
 		libraries\WiFi101\WiFi101.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
 		shared\MQTT_Reader\MQTT_Reader.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
 		shared\MQTT_Reader\MQTT_Reader.vcxitems*{90f0ef28-5343-49c1-88c3-8f02bc1aa776}*SharedItemsImports = 9
 		shared\MQTT_Writer\MQTT_Writer.vcxitems*{7a0012ef-49d0-44aa-a964-61ec73b6ae75}*SharedItemsImports = 9
 		libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		Shared\Secrets\Secrets.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		Shared\Utility\Utility.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		libraries\WiFi101\WiFi101.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		shared\MQTT_Reader\MQTT_Reader.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		Shared\Utility\Utility.vcxitems*{6a7f197a-93c7-4421-a7ef-a67b27b5d8cf}*SharedItemsImports = 9
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -75,5 +80,6 @@ Global
 		{7A0012EF-49D0-44AA-A964-61EC73B6AE75} = {A812CBB9-722F-49E3-B165-2BD6EA01D2B5}
 		{C5F80730-F44F-4478-BDAE-6634EFC2CA88} = {0F583751-D37A-4761-B3D7-58E91756DAC0}
 		{E089CE27-F482-4D1A-897C-039A3B927D09} = {0F583751-D37A-4761-B3D7-58E91756DAC0}
+		{6A7F197A-93C7-4421-A7EF-A67B27B5D8CF} = {A812CBB9-722F-49E3-B165-2BD6EA01D2B5}
 	EndGlobalSection
 EndGlobal
