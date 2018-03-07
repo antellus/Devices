@@ -56,7 +56,7 @@ CmdType LED_RGB::cmdHandler(char* val) {
 
 // Resumes continues a command. Designed to be called in the main loop for running state
 void LED_RGB::resume() {
-	Serial.print(F("Resuming...")); Serial.println(lastCmd);
+	Serial.print(F("Resuming...")); Serial.println((char)lastCmd);
 
 	switch (lastCmd) {
 	case CM_fade:
