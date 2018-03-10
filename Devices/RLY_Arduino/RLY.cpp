@@ -30,12 +30,12 @@ void RLY::cmdHandler(char* val){
 
 // opens the relay circuit (off mode)
 void RLY::open(){
-	Serial.println(F("Opening the circuit!"));
+	UTIL_PRINTLN(F("Opening the circuit!"));
 	digitalWrite(pin, LOW);
 }
 
 // closes the relay circuit (on mode)
 void RLY::close(){
 	Serial.println(F("Closing the circuit!"));
-	digitalWrite(pin, HIGH);
+	UTIL_PRINTLN(pin, HIGH);
 }

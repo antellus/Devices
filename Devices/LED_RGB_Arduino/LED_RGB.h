@@ -26,7 +26,8 @@ enum CmdType:unsigned char {
 	CM_hex  = '#',
 	CM_fade = 'F', 
 	CM_up   = 'U', 
-	CM_dn   = 'D'
+	CM_dn   = 'D',
+	CM_pulse = 'P'
 };
 
 // class def for led rgb controller
@@ -49,6 +50,7 @@ class LED_RGB
 		void setRgb(unsigned long val);
 		void setRgb(char* val);
 		void setRgb(Rgb val);
+		void pulse();
 		void fade();
 		void fade(uint8_t pin, uint8_t from, uint8_t to);
 		void up();

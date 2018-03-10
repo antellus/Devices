@@ -24,13 +24,13 @@ void setup() {
 	Serial.begin(115200);
 
 	// init wifi board
-	Serial.print(F("Init WiFi module..."));
+	UTIL_PRINT(F("Init WiFi module..."));
 	// check for the presence of the breakout
 	if (WiFi.status() == WL_NO_SHIELD) {
-		Serial.println(F("not present"));
+		UTIL_PRINTLN(F("not present"));
 		while (true); // don't continue:
 	}
-	Serial.println(F("ATWINC OK!"));
+	UTIL_PRINTLN(F("ATWINC OK!"));
 
 	// init the relay handler
 	relay.init(P_Rly);

@@ -1,8 +1,10 @@
 *.suo
 **/__vm/
 **/Debug/
+**/Release/
 *.filters
 **/Libraries/
 *.vcxitems
 *.filters
 Shared/Secrets/Private.h
+*.TMP

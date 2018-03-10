@@ -1,4 +1,11 @@
 #pragma once
+#include "LED_RGB.h"
+#include "MQTT_Reader.h"
+#include "Utility.h"
+
+// external libraries
+#include <SPI.h>
+#include <WiFi101.h>
 
 enum PinDef : uint8_t {
 	// led pins

@@ -1,7 +1,7 @@
 #include "LED_RGB.h"
 
 // Inits the LED RGB controller
-void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB){
+void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB) {
 	// set pin mode
 	pinMode(pinR, OUTPUT);
 	pinMode(pinG, OUTPUT);
@@ -31,7 +31,7 @@ void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB){
 // Command handler for the specified value, maps feed data to a command,
 CmdType LED_RGB::cmdHandler(char* val) {
 	// handle new or existing state command
-	Serial.println(F("Handling cmd"));
+	UTIL_PRINTLN(F("Handling cmd"));
 
 	// hex requires a string starting with #
 	if (val[0] == CM_hex) {
@@ -50,21 +50,48 @@ CmdType LED_RGB::cmdHandler(char* val) {
 		down();
 		lastCmd = CM_dn;
 	}
+	else if (val[0] == CM_pulse) {
+		pulse();
+		lastCmd = CM_pulse;
+	}
 
 	return lastCmd;
 }
 
 // Resumes continues a command. Designed to be called in the main loop for running state
 void LED_RGB::resume() {
-	Serial.print(F("Resuming...")); Serial.println((char)lastCmd);
+	UTIL_PRINT(F("Resuming..."));UTIL_PRINTLN((char)lastCmd);
 
 	switch (lastCmd) {
 	case CM_fade:
 		fade();
 		break;
+	case CM_pulse:
+		pulse();
+		break;
 	default:
 		break;
 
+	}
+}
+
+void LED_RGB::pulse() {
+	// fade to black
+	setRgb({ 0,0,0 });
+
+	// pulses red 2 x
+	for (uint8_t i = 0; i < 2; i++) {
+
+		// pulse on red
+		uint8_t n = 0;
+		while(n < 255){
+			analogWrite(r, n+=5);
+		}
+
+		while (n > 0) {
+			analogWrite(r, n-=5);
+			delay(FADESPEED);
+		}
 	}
 }
 

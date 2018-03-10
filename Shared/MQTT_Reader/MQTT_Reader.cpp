@@ -29,8 +29,8 @@ void MQTT_Reader::connect()
 
 	// connect to wifi
 	while (WiFi.status() != WL_CONNECTED) {
-		Serial.print(F("Connect SSID: "));
-		Serial.println(W_SSID);
+		UTIL_PRINT(F("Connect SSID: "));
+		UTIL_PRINTLN(W_SSID);
 		WiFi.begin(W_SSID, W_PASS);
 
 		// check connection every second for 10 seconds
@@ -46,22 +46,20 @@ void MQTT_Reader::connect()
 		return;
 	}
 
-	Serial.print(F("Connect MQTT... "));
+	UTIL_PRINT(F("Connect MQTT... "));
 	while ((result = mqtt->connect()) != 0) { // connect will return 0 for connected
-		Serial.println(mqtt->connectErrorString(result));
-		Serial.println(F("Retrying"));
+		UTIL_PRINTLN(mqtt->connectErrorString(result));
+		UTIL_PRINTLN(F("Retrying"));
 		mqtt->disconnect();
 		delay(5000);  // wait 5 seconds
 	}
-	Serial.println(F("Connected!"));
+	UTIL_PRINTLN(F("Connected!"));
 }
 
 char* MQTT_Reader::read(uint16_t timeout)
 {
-	char result[20] = { '\0' };
-
 	// handle incoming feed from mqtt
-	Serial.println(F("Reading..."));
+	UTIL_PRINTLN(F("Reading..."));
 
 	// re-connect wifi and mqtt if needed
 	connect();
@@ -69,11 +67,9 @@ char* MQTT_Reader::read(uint16_t timeout)
 	// waits for incoming packets for 5 seconds on this subscription
 	while (Adafruit_MQTT_Subscribe *subscription = mqtt->readSubscription(timeout)) {
 		if (subscription == feed) {
-			Serial.println((char*)feed->lastread);
-			strcpy(result, (char*)feed->lastread);
-			break;
+			return (char*)feed->lastread;
 		}
 	}
 
-	return result;
+	return NULL;
 }

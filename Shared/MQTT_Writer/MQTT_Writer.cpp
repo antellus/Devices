@@ -27,8 +27,8 @@ void MQTT_Writer::connect()
 
 	// connect to wifi
 	while (WiFi.status() != WL_CONNECTED) {
-		Serial.print(F("Connect SSID: "));
-		Serial.println(W_SSID);
+		UTIL_PRINT(F("Connect SSID: "));
+		UTIL_PRINTLN(W_SSID);
 		WiFi.begin(W_SSID, W_PASS);
 
 		// check connection every second for 10 seconds
@@ -44,20 +44,20 @@ void MQTT_Writer::connect()
 		return;
 	}
 
-	Serial.print(F("Connect MQTT... "));
+	UTIL_PRINT(F("Connect MQTT... "));
 	while ((result = mqtt->connect()) != 0) { // connect will return 0 for connected
-		Serial.println(mqtt->connectErrorString(result));
-		Serial.println(F("Retrying"));
+		UTIL_PRINTLN(mqtt->connectErrorString(result));
+		UTIL_PRINTLN(F("Retrying"));
 		mqtt->disconnect();
 		delay(5000);  // wait 5 seconds
 	}
-	Serial.println(F("Connected!"));
+	UTIL_PRINTLN(F("Connected!"));
 }
 
 bool MQTT_Writer::write(bool val)
 {
 	// handle incoming feed from mqtt
-	Serial.println(F("Writing..."));
+	UTIL_PRINTLN(F("Writing..."));
 
 	// re-connect wifi and mqtt if needed
 	connect();

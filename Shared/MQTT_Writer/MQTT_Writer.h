@@ -2,6 +2,7 @@
 #include <Adafruit_MQTT_Client.h>
 #include <WiFi101.h>
 #include "Secrets.h"
+#include "Utility.h"
 
 // MQTT_writer.h
 #ifndef _MQTT_WRITER_h
