@@ -1,12 +1,5 @@
-// local references
-#include "RLY.h"
-#include "RLY_Arduino.h"
-#include "MQTT_Reader.h"
-#include "Utility.h"
-
-// external libraries
-#include <SPI.h>
-#include <WiFi101.h>
+// local
+#include "RLY_Arduino.h""
 
 // mqtt reader
 MQTT_Reader reader;

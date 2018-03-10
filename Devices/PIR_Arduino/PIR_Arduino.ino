@@ -1,10 +1,5 @@
 // local references
 #include "PIR_Arduino.h"
-#include "MQTT_Writer.h"
-
-// external libraries
-#include <SPI.h>
-#include <WiFi101.h>
 
 // mqtt writer
 MQTT_Writer writer;
@@ -23,12 +18,11 @@ void setup() {
 
 	// init wifi board
 	Serial.print(F("Init WiFi module..."));
-	// check for the presence of the breakout
 	if (WiFi.status() == WL_NO_SHIELD) {
-		Serial.println(F("not present"));
+		UTIL_PRINTLN(F("not present"));
 		while (true); // don't continue:
 	}
-	Serial.println(F("ATWINC OK!"));
+	UTIL_PRINTLN(F("ATWINC OK!"));
 
 	// init pins
 	pinMode(P_Led, OUTPUT);
@@ -45,9 +39,9 @@ void loop()
 	if (digitalRead(P_Pir) != state) {
 		state = !state;
 		digitalWrite(P_Led, state);
-		Serial.println((state) ? F("Motion Detected!") : F("Motion Ended!"));
+		UTIL_PRINTLN((state) ? F("Motion Detected!") : F("Motion Ended!"));
 		
 		bool published = writer.write(state);
-		Serial.println((published) ? F("Published!") : F("Failed to publish!"));
+		UTIL_PRINTLN((published) ? F("Published!") : F("Failed to publish!"));
 	}
 }

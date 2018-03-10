@@ -10,7 +10,7 @@ void RLY::init(uint8_t pinRly){
 // handles commands from mqtt feed
 void RLY::cmdHandler(char* val){
 	// handle the cmd  from feed, only values of 0 or 1 valid
-	if (NULL != val && val[0] != '\0') {
+	if (!isNull(val)) {
 		uint8_t cmd = atoi(val);
 
 		// only respond to O (open circuit) or C (close circuit);
@@ -36,6 +36,6 @@ void RLY::open(){
 
 // closes the relay circuit (on mode)
 void RLY::close(){
-	Serial.println(F("Closing the circuit!"));
-	UTIL_PRINTLN(pin, HIGH);
+	UTIL_PRINTLN(F("Closing the circuit!"));
+	digitalWrite(pin, HIGH);
 }

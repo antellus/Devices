@@ -1,4 +1,4 @@
-// local references
+// local 
 #include "LED_RGB_Arduino.h"
 
 // led rgb handler

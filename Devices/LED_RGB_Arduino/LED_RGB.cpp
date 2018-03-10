@@ -58,7 +58,7 @@ CmdType LED_RGB::cmdHandler(char* val) {
 	return lastCmd;
 }
 
-// Resumes continues a command. Designed to be called in the main loop for running state
+// Resumes continues a command. Designed to be called in the main loop for running state.
 void LED_RGB::resume() {
 	UTIL_PRINT(F("Resuming..."));UTIL_PRINTLN((char)lastCmd);
 
@@ -75,22 +75,23 @@ void LED_RGB::resume() {
 	}
 }
 
+// Pulses red twice per call. Designed to be called in the main loop for running state.
 void LED_RGB::pulse() {
 	// fade to black
 	setRgb({ 0,0,0 });
 
-	// pulses red 2 x
+	// pulses 2x
 	for (uint8_t i = 0; i < 2; i++) {
 
 		// pulse on red
 		uint8_t n = 0;
 		while(n < 255){
-			analogWrite(r, n+=5);
+			analogWrite(r, n+=5); // fast fade in
 		}
 
 		while (n > 0) {
 			analogWrite(r, n-=5);
-			delay(FADESPEED);
+			delay(FADESPEED); // slower fade out
 		}
 	}
 }

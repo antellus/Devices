@@ -1,5 +1,16 @@
-#pragma once
+#ifndef _LED_RGB_ARDUINO_h
+#define _LED_RGB_ARDUINO_h
+
+#if defined(ARDUINO) && ARDUINO >= 100
+#include "arduino.h"
+#else
+#include "WProgram.h"
+#endif
+
+// local
 #include "LED_RGB.h"
+
+// shared libraries
 #include "MQTT_Reader.h"
 #include "Utility.h"
 
@@ -9,12 +20,13 @@
 
 enum PinDef : uint8_t {
 	// led pins
-	P_G = 0x3,
-	P_R = 0x5, 
-	P_B = 0x6,
+	P_G = 3,
+	P_R = 5, 
+	P_B = 6,
 
 	// atwinc pins
-	P_Rst = 0x8, // reset
-	P_Irq = 0x9, // interrupts
-	P_Cs  = 0xa   // chip select
+	P_Rst = 8, // reset
+	P_Irq = 9, // interrupts
+	P_Cs = 10  // chip select
 };
+#endif

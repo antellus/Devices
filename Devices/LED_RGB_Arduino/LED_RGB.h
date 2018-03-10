@@ -1,14 +1,13 @@
-#pragma once
-
 #ifndef _LED_RGB_h
 #define _LED_RGB_h
 
 #if defined(ARDUINO) && ARDUINO >= 100
-	#include "arduino.h"
+#include "arduino.h"
 #else
-	#include "WProgram.h"
+#include "WProgram.h"
 #endif
 
+// shared libraries
 #include "Utility.h"
 
 // operating constants
@@ -43,16 +42,16 @@ class LED_RGB
 		Rgb ultoRgb(unsigned long val);
 		uint8_t up(uint8_t val);
 		uint8_t down(uint8_t val);
+		void fade(uint8_t pin, uint8_t from, uint8_t to);
+		void setRgb(unsigned long val);
+		void setRgb(char* val);
 	public:
 		void init(uint8_t pinR, uint8_t pinG, uint8_t pinB);
 		CmdType cmdHandler(char* val);
 		void resume();
-		void setRgb(unsigned long val);
-		void setRgb(char* val);
 		void setRgb(Rgb val);
 		void pulse();
 		void fade();
-		void fade(uint8_t pin, uint8_t from, uint8_t to);
 		void up();
 		void down();
 };
