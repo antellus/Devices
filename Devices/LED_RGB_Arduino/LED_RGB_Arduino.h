@@ -17,6 +17,8 @@
 // external libraries
 #include <SPI.h>
 #include <WiFi101.h>
+#include <avr/wdt.h>
+#include <avr/eeprom.h>
 
 enum PinDef : uint8_t {
 	// led pins

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Adafruit_MQTT_Library", "libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems", "{8BAED539-3342-4822-8369-BC9F073E4A4F}"
 EndProject
@@ -30,25 +30,26 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		libraries\WiFi101\WiFi101.vcxitems*{2a6f8cca-d1d0-4ba8-8c2a-0a22a123a925}*SharedItemsImports = 9
-		libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems*{8baed539-3342-4822-8369-bc9f073e4a4f}*SharedItemsImports = 9
-		libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems*{e089ce27-f482-4d1a-897c-039a3b927d09}*SharedItemsImports = 4
-		Shared\Secrets\Secrets.vcxitems*{e089ce27-f482-4d1a-897c-039a3b927d09}*SharedItemsImports = 4
-		libraries\WiFi101\WiFi101.vcxitems*{e089ce27-f482-4d1a-897c-039a3b927d09}*SharedItemsImports = 4
-		shared\MQTT_Writer\MQTT_Writer.vcxitems*{e089ce27-f482-4d1a-897c-039a3b927d09}*SharedItemsImports = 4
+		Shared\Utility\Utility.vcxitems*{6a7f197a-93c7-4421-a7ef-a67b27b5d8cf}*SharedItemsImports = 9
 		Shared\Secrets\Secrets.vcxitems*{77375c2a-9a81-4f86-b14a-cf57a375d25e}*SharedItemsImports = 9
-		libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
-		Shared\Secrets\Secrets.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
-		Shared\Utility\Utility.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
-		libraries\WiFi101\WiFi101.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
-		shared\MQTT_Reader\MQTT_Reader.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
-		shared\MQTT_Reader\MQTT_Reader.vcxitems*{90f0ef28-5343-49c1-88c3-8f02bc1aa776}*SharedItemsImports = 9
 		shared\MQTT_Writer\MQTT_Writer.vcxitems*{7a0012ef-49d0-44aa-a964-61ec73b6ae75}*SharedItemsImports = 9
+		libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems*{8baed539-3342-4822-8369-bc9f073e4a4f}*SharedItemsImports = 9
+		shared\MQTT_Reader\MQTT_Reader.vcxitems*{90f0ef28-5343-49c1-88c3-8f02bc1aa776}*SharedItemsImports = 9
 		libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		Shared\Secrets\Secrets.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		Shared\Utility\Utility.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		libraries\WiFi101\WiFi101.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
 		shared\MQTT_Reader\MQTT_Reader.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
-		Shared\Utility\Utility.vcxitems*{6a7f197a-93c7-4421-a7ef-a67b27b5d8cf}*SharedItemsImports = 9
+		Shared\Secrets\Secrets.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		Shared\Utility\Utility.vcxitems*{c5f80730-f44f-4478-bdae-6634efc2ca88}*SharedItemsImports = 4
+		libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems*{e089ce27-f482-4d1a-897c-039a3b927d09}*SharedItemsImports = 4
+		libraries\WiFi101\WiFi101.vcxitems*{e089ce27-f482-4d1a-897c-039a3b927d09}*SharedItemsImports = 4
+		shared\MQTT_Writer\MQTT_Writer.vcxitems*{e089ce27-f482-4d1a-897c-039a3b927d09}*SharedItemsImports = 4
+		Shared\Secrets\Secrets.vcxitems*{e089ce27-f482-4d1a-897c-039a3b927d09}*SharedItemsImports = 4
+		Shared\Utility\Utility.vcxitems*{e089ce27-f482-4d1a-897c-039a3b927d09}*SharedItemsImports = 4
+		libraries\Adafruit_MQTT_Library\Adafruit_MQTT_Library.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
+		libraries\WiFi101\WiFi101.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
+		shared\MQTT_Reader\MQTT_Reader.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
+		Shared\Secrets\Secrets.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
+		Shared\Utility\Utility.vcxitems*{e090f5a1-cf8a-4fdd-9d81-63c36f806fff}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86

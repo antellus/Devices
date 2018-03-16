@@ -22,11 +22,15 @@ struct RgbNode { Rgb rgb; RgbNode* next; };
 
 // feed cmd tokens
 enum CmdType:unsigned char {
-	CM_hex  = '#',
-	CM_fade = 'F', 
-	CM_up   = 'U', 
-	CM_dn   = 'D',
-	CM_pulse = 'P'
+	CM_hex   = '#',  //35
+	CM_dn    = 'D',  //68
+	CM_fade  = 'F',  //70
+	CM_pulse = 'P',  //80
+	CM_up    = 'U',  //85
+
+	// range
+	CM_min = CM_hex,
+	CM_max = CM_up
 };
 
 // class def for led rgb controller
@@ -39,16 +43,19 @@ class LED_RGB
 		CmdType lastCmd; 
 		void setlast(uint8_t pin, uint8_t val);
 		void addNode(Rgb val);
-		Rgb ultoRgb(unsigned long val);
-		uint8_t up(uint8_t val);
-		uint8_t down(uint8_t val);
-		void fade(uint8_t pin, uint8_t from, uint8_t to);
-		void setRgb(unsigned long val);
+		Rgb ultoRgb(uint32_t val);
+		uint32_t rgbtoul(Rgb val);
+		uint32_t up(uint32_t val, uint8_t bitshift);
+		uint32_t down(uint32_t val, uint8_t bitshift);
+		uint32_t up(uint32_t val);
+		uint32_t down(uint32_t val);
+    	void fade(uint8_t pin, uint8_t from, uint8_t to);
+		void setRgb(uint32_t val);
 		void setRgb(char* val);
 	public:
 		void init(uint8_t pinR, uint8_t pinG, uint8_t pinB);
-		CmdType cmdHandler(char* val);
-		void resume();
+		void cmdExecutor(char* cmd);
+		char* feedHandler(char* val, char* cmd);
 		void setRgb(Rgb val);
 		void pulse();
 		void fade();

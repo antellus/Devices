@@ -7,17 +7,22 @@ LED_RGB ledrgb;
 // mqtt reader
 MQTT_Reader reader;
 
-// Utility class
+// utility class
 Utility util;
+
+// ledrgb command str: #000000, F, U, D, P, etc.
+char cmd[20] = { '\0' };
 
 // arduino setup runs once per power up
 void setup() {
 	// required for winc breakout
 	WiFi.setPins(P_Cs, P_Irq, P_Rst);
 
+#ifdef UTIL_PRINTER
 	// init serial port
 	while (!Serial);
 	Serial.begin(115200);
+#endif
 
 	// init wifi board
 	UTIL_PRINT(F("Init WiFi module..."));
@@ -25,29 +30,39 @@ void setup() {
 		UTIL_PRINTLN(F("not present"));
 		while (true); // don't continue:
 	}
-	UTIL_PRINT(F("ATWINC OK!"));
+	UTIL_PRINTLN(F("ATWINC OK!"));
 
 	// init led rgb controller
 	ledrgb.init(P_R, P_G, P_B);
 
 	// init the mqtt reader
 	reader.init();
+
+	// read eeprom last saved value for resets
+	UTIL_PRINT("Reading EEPROM...");
+	EEPROM.get(0, cmd);
+	UTIL_PRINTLN(cmd);
+	
+	// handle startup command
+	ledrgb.cmdExecutor(cmd);
+
+	// enable watchdog timer, reset after 8 seconds if reset not called
+	wdt_enable(WDTO_8S);
 }
 
 // arduino loop runs continuously
 void loop() {
-	UTIL_PRINT(F("Free RAM:")); UTIL_PRINTLN(util.freeRam());
+	// reset watchdog timer
+	wdt_reset();
 
-	// reader waits on timeout for incoming packets
 	char* value = reader.read(5000);
-
 	if (!isNull(value)) {
-		UTIL_PRINTLN((char*)value);
-		// handle the feed value: F, U, D, #ffffff
-		ledrgb.cmdHandler(value);
+		char* v = ledrgb.feedHandler(value, cmd);
+		if (!isNull(v)) {
+			UTIL_PRINT("Writing EEPROM..."); UTIL_PRINTLN(cmd);
+			EEPROM.put(0, cmd);
+		}
 	}
-	else{
-		// resumes the current state: fade, flash, etc
-		ledrgb.resume();
-	}
+		
+	ledrgb.cmdExecutor(cmd);
 }

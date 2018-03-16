@@ -8,3 +8,4 @@
 *.filters
 Shared/Secrets/Private.h
 *.TMP
+Shared/Secrets/Secrets.h

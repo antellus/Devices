@@ -7,8 +7,11 @@
 #include "WProgram.h"
 #endif
 
+// external libraries
+#include "EEPROM.h"
+
 // Uncomment/comment to turn on/off debug output messages.
-// #define UTIL_DEBUG
+#define UTIL_DEBUG
 
 // Set where debug messages will be printed.
 #define UTIL_PRINTER Serial
@@ -22,11 +25,10 @@
 #define UTIL_PRINTLN(...) {}
 #endif
 
+// macros
+#define isNull(a) (a == NULL || a[0] == '\0') ? true : false // null check
 
-// null check macro
-#define isNull(a) (a == NULL || a[0] == '\0') ? true : false
-
-// mqtt reader class for retrieving feed values from the server
+// utility class
 class Utility
 {
 	public:

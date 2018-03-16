@@ -12,9 +12,6 @@ void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB) {
 	g = pinG;
 	b = pinB;
 	
-	// default last cmd
-	lastCmd = CM_fade;  
-
 	// default rgb
 	lastRgb = { 0, 0, 0 };
 
@@ -28,51 +25,72 @@ void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB) {
 	addNode({ 0x00,0xff,0xff });  //teal   #00ffff    65535- end the circle
 }
 
-// Command handler for the specified value, maps feed data to a command,
-CmdType LED_RGB::cmdHandler(char* val) {
-	// handle new or existing state command
-	UTIL_PRINTLN(F("Handling cmd"));
-
-	// hex requires a string starting with #
-	if (val[0] == CM_hex) {
-		setRgb(val);
-		lastCmd = CM_hex;
-	} // requires F char
-	else if (val[0] == CM_fade) {
-		fade();
-		lastCmd = CM_fade;
-	} // up requires U char
-	else if (val[0] == CM_up) {
-		up();
-		lastCmd = CM_up;
-	} // down requires D char
-	else if (val[0] == CM_dn) {
-		down();
-		lastCmd = CM_dn;
-	}
-	else if (val[0] == CM_pulse) {
-		pulse();
-		lastCmd = CM_pulse;
+// Executes a command for the specified value
+void LED_RGB::cmdExecutor(char* cmd) {
+	if (cmd == NULL || cmd[0] < CM_min || cmd[0] > CM_max) {
+		UTIL_PRINT(F("Unknown cmd...")); UTIL_PRINTLN(cmd);
+		return;
 	}
 
-	return lastCmd;
-}
+	UTIL_PRINT(F("Executing cmd..."));
 
-// Resumes continues a command. Designed to be called in the main loop for running state.
-void LED_RGB::resume() {
-	UTIL_PRINT(F("Resuming..."));UTIL_PRINTLN((char)lastCmd);
-
-	switch (lastCmd) {
+	// map cmd to function to execute
+	switch (cmd[0]) {
+	case CM_hex:
+		setRgb(cmd);
+		UTIL_PRINTLN(cmd);
+		break;
 	case CM_fade:
 		fade();
+		UTIL_PRINTLN(cmd);
 		break;
 	case CM_pulse:
 		pulse();
+		UTIL_PRINTLN(cmd);
 		break;
 	default:
+		UTIL_PRINTLN(F("not a valid command!"));
 		break;
-
 	}
+}
+
+// Feed handler maps feed to command
+char* LED_RGB::feedHandler(char* feed, char* cmd) {
+	if (feed == NULL || feed[0] < CM_min || feed[0] > CM_max) {
+		UTIL_PRINT(F("Unknown feed value...")); UTIL_PRINTLN(feed);
+		cmd = NULL;
+		return cmd;
+	}
+
+	UTIL_PRINT(F("Handling feed..."));
+
+	// map feed to command
+	switch (feed[0]) {
+	// hex, pulse, fade are already commands that can be executed as-is
+	case CM_hex:
+	case CM_pulse:
+	case CM_fade:
+		strcpy(cmd, feed);
+		UTIL_PRINTLN(cmd);
+		break;
+	// up / down commands map to a new rgb / hex, needed for power resets
+	// so the str can be persisted by the caller, i.e., store result in eeprom
+	case CM_up:
+	case CM_dn:
+	{
+		// compute new 24bit long from rgb, calc up or down, returns #nnnnnn
+		uint32_t val = rgbtoul(lastRgb);
+		val = (feed[0] == CM_up) ? up(val) : down(val);
+		ultoa(val, &cmd[1], HEX);
+		cmd[0] = '#';
+		UTIL_PRINTLN(cmd);
+		break;
+	}
+	default:
+		UTIL_PRINTLN(F("not a valid feed!"));
+		break;
+	}
+	return cmd;
 }
 
 // Pulses red twice per call. Designed to be called in the main loop for running state.
@@ -98,14 +116,14 @@ void LED_RGB::pulse() {
 
 // Sets rgb pins from provided hex str, e.g., #ffffff
 void LED_RGB::setRgb(char* val) {
-	if (!isNull(val)) {
+	if (!isNull(val) && val[0] == '#') {
 		// set the pointer after # so we can convert to ulong
-		setRgb(ultoRgb(strtoul((const char*)&val[1], NULL, 16)));
+		setRgb(ultoRgb(strtoul((const char*)&val[1], NULL, HEX)));
 	}
 }
 
 // Sets rgb pings from provided long value
-void LED_RGB::setRgb(unsigned long val) {
+void LED_RGB::setRgb(uint32_t val) {
 	setRgb(ultoRgb(val));
 }
 
@@ -139,28 +157,80 @@ void LED_RGB::fade(uint8_t pin, uint8_t from, uint8_t to) {
 	setlast(pin, from);
 }
 
-// Increases non zero, non max value by MULTI to max 
-uint8_t LED_RGB::up(uint8_t val) {
-	return (val > 0 && val < 0xff) ? min(val * MULTI, 0xff) : val;
+// Increases non zero value by MULTI to max
+uint32_t LED_RGB::up(uint32_t val) {
+	uint32_t result = 0;
+
+	// 24bit
+	if (val > 0x00ff00) {
+		result = up(val, 16);
+	}
+
+	// 16bit
+	if (val > 0xff) {
+		result |= up(val, 8);
+	}
+
+	// 8bit
+	result |= up(val, 0);
+
+	return result;
 }
 
-// Decreases non zero value by MULTI to 0
-uint8_t LED_RGB::down(uint8_t val) {
-	return (val > 0 && val <= 0xff) ? max(val / MULTI, 0) : val;
+// Decreases value by MULTI to 0
+uint32_t LED_RGB::down(uint32_t val) {
+	uint32_t result = 0;
+
+	// 24bit
+	if (val > 0x00ff00) {
+		result = down(val, 16);
+	}
+
+	// 16bit
+	if (val > 0xff) {
+		result |= down(val, 8);
+	}
+
+	// 8bit
+	result |= down(val, 0);
+
+	return result;
 }
 
-// Increases brightness to max
+// Increases a specific byte within the 24bit int by MULTI up to max value
+uint32_t LED_RGB::up(uint32_t val, uint8_t bitshift) {
+	// bit shift supplied val to 8bit, mask
+	uint32_t r = 0;
+	
+	r = (val >> bitshift & 0xff) * MULTI;
+	
+	// constrain to max of 256, shift back
+	r = min(r, 0xff) << bitshift;
+	
+	return r;
+}
+
+// Decreases a specific byte within the 24bit int by MULTI down to 0
+uint32_t LED_RGB::down(uint32_t val, uint8_t bitshift) {
+	// bit shift supplied val to 8bit, mask
+	uint32_t r = 0;
+	
+	r = (val >> bitshift & 0xff) / MULTI;
+
+	// constrain to min of 0, shift back
+	r = max(r, 0x0) << bitshift;
+
+	return r;
+}
+
+// Increases brightness
 void LED_RGB::up() {
-	fade(r, lastRgb.r, up(lastRgb.r));
-	fade(g, lastRgb.g, up(lastRgb.g));
-	fade(b, lastRgb.b, up(lastRgb.b));
+	cmdExecutor("U");
 }
 
-// Decreases brightness to off
+// Decreases brightness
 void LED_RGB::down() {
-	fade(r, lastRgb.r, down(lastRgb.r));
-	fade(g, lastRgb.g, down(lastRgb.g));
-	fade(b, lastRgb.b, down(lastRgb.b));
+	cmdExecutor("D");
 }
 
 // Set the last (current state) for the specified pin
@@ -177,7 +247,7 @@ void LED_RGB::setlast(uint8_t pin, uint8_t val) {
 }
 
 // Gets an RGB value {rr,gg,bb} from the provided long value
-Rgb LED_RGB::ultoRgb(unsigned long val) {
+Rgb LED_RGB::ultoRgb(uint32_t val) {
 	Rgb result = { 0, 0, 0 };
 
 	// bit shift and mask
@@ -186,6 +256,11 @@ Rgb LED_RGB::ultoRgb(unsigned long val) {
 	result.b = val & 0xff;
 
 	return result;
+}
+
+// Converts an rgb to equivalent unsigned long
+uint32_t LED_RGB::rgbtoul(Rgb val) {
+	return (((uint32_t)(val.r)) << 16) | (((uint32_t)(val.g)) << 8) | (uint32_t)(val.b);
 }
 
 // creates a new node, adds it to the list
