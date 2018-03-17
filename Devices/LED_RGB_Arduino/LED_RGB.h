@@ -14,6 +14,9 @@
 #define FADESPEED 5    // millis fade delay
 #define MULTI 1.50     // increase/decrease brightness multiplier
 
+// increase or decrease a by 1 relative to b
+#define tick(a, b) (a == b) ? a : ((a < b) ? a + 1 : a - 1)
+
 // struct for storing red, green blue 
 struct Rgb { uint8_t r; uint8_t g; uint8_t b; };
 
@@ -41,7 +44,6 @@ class LED_RGB
 		Rgb lastRgb;
 		RgbNode *lastNode;
 		CmdType lastCmd; 
-		void setlast(uint8_t pin, uint8_t val);
 		void addNode(Rgb val);
 		Rgb ultoRgb(uint32_t val);
 		uint32_t rgbtoul(Rgb val);
@@ -49,7 +51,6 @@ class LED_RGB
 		uint32_t down(uint32_t val, uint8_t bitshift);
 		uint32_t up(uint32_t val);
 		uint32_t down(uint32_t val);
-    	void fade(uint8_t pin, uint8_t from, uint8_t to);
 		void setRgb(uint32_t val);
 		void setRgb(char* val);
 	public:

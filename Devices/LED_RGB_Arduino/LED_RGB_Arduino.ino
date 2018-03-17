@@ -18,6 +18,9 @@ void setup() {
 	// required for winc breakout
 	WiFi.setPins(P_Cs, P_Irq, P_Rst);
 
+	// init led rgb controller
+	ledrgb.init(P_R, P_G, P_B);
+
 #ifdef UTIL_PRINTER
 	// init serial port
 	while (!Serial);
@@ -31,9 +34,6 @@ void setup() {
 		while (true); // don't continue:
 	}
 	UTIL_PRINTLN(F("ATWINC OK!"));
-
-	// init led rgb controller
-	ledrgb.init(P_R, P_G, P_B);
 
 	// init the mqtt reader
 	reader.init();

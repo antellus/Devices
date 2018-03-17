@@ -7,6 +7,11 @@ void LED_RGB::init(uint8_t pinR, uint8_t pinG, uint8_t pinB) {
 	pinMode(pinG, OUTPUT);
 	pinMode(pinB, OUTPUT);
 	
+	// reset to 0 for startup
+	analogWrite(pinR, 0);
+	analogWrite(pinG, 0);
+	analogWrite(pinB, 0);
+
 	// set pin definition
 	r = pinR;
 	g = pinG;
@@ -127,11 +132,24 @@ void LED_RGB::setRgb(uint32_t val) {
 	setRgb(ultoRgb(val));
 }
 
-// Sets rgb pins to the specified value
 void LED_RGB::setRgb(Rgb val) {
-	fade(r, lastRgb.r, val.r);
-	fade(g, lastRgb.g, val.g);
-	fade(b, lastRgb.b, val.b);
+	Rgb& l = lastRgb;
+
+	// cross fade
+	while (val.r != l.r ||
+		   val.g != l.g ||
+		   val.b != l.b) {
+
+		l.r = tick(l.r, val.r);
+		l.g = tick(l.g, val.g);
+		l.b = tick(l.b, val.b);
+
+		analogWrite(r, l.r);
+		analogWrite(g, l.g);
+		analogWrite(b, l.b);
+		
+		delay(FADESPEED);
+	}
 }
 
 // Fades pins in a circular list
@@ -139,22 +157,6 @@ void LED_RGB::fade() {
 	// next color in sequence
 	lastNode = lastNode->next;
 	setRgb(lastNode->rgb);
-}
-
-// Fades pin from value to value, up or down
-void LED_RGB::fade(uint8_t pin, uint8_t from, uint8_t to) {
-	while (from < to) {
-		analogWrite(pin, ++from);
-		delay(FADESPEED);
-	}
-
-	while (from > to) {
-		analogWrite(pin, --from);
-		delay(FADESPEED);
-	}
-
-	// store for later
-	setlast(pin, from);
 }
 
 // Increases non zero value by MULTI to max
@@ -231,19 +233,6 @@ void LED_RGB::up() {
 // Decreases brightness
 void LED_RGB::down() {
 	cmdExecutor("D");
-}
-
-// Set the last (current state) for the specified pin
-void LED_RGB::setlast(uint8_t pin, uint8_t val) {
-	if (pin == r) {
-		lastRgb.r = val;
-	}
-	else if (pin == g) {
-		lastRgb.g = val;
-	}
-	else if (pin == b) {
-		lastRgb.b = val;
-	}
 }
 
 // Gets an RGB value {rr,gg,bb} from the provided long value
