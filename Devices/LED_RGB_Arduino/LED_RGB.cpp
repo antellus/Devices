@@ -41,21 +41,51 @@ void LED_RGB::cmdExecutor(char* cmd) {
 
 	// map cmd to function to execute
 	switch (cmd[0]) {
-	case CM_hex:
-		setRgb(cmd);
-		UTIL_PRINTLN(cmd);
-		break;
+		case CM_hex: {
+			// set the pointer after # so we can convert to ulong
+			setRgb(ultoRgb(strtoul((const char*)&cmd[1], NULL, HEX)));
+			UTIL_PRINTLN(cmd);
+			break;
+		}
+		case CM_fade: {
+			// next color in sequence
+			lastNode = lastNode->next;
+			setRgb(lastNode->rgb);
+			UTIL_PRINTLN(cmd);
+			break;
+		}
+		case CM_pulse: {
+			// pulses red
+			pulse(r);
+			UTIL_PRINTLN(cmd);
+			break;
+		}
+		default: {
+			UTIL_PRINTLN(F("not a valid command!"));
+			break;
+		}
+	}
+}
+
+// Executes a command by type
+void LED_RGB::cmdExecutor(CmdType cmd) {
+	switch (cmd) {
+		// cmds that can be executed by type
 	case CM_fade:
-		fade();
-		UTIL_PRINTLN(cmd);
-		break;
 	case CM_pulse:
-		pulse();
-		UTIL_PRINTLN(cmd);
+	case CM_up:
+	case CM_dn:
+	{
+		char c[2] = { cmd, '\0' };
+		cmdExecutor(c);
+		delete[] c;
 		break;
+	}
 	default:
+	{
 		UTIL_PRINTLN(F("not a valid command!"));
 		break;
+	}
 	}
 }
 
@@ -85,11 +115,12 @@ char* LED_RGB::feedHandler(char* feed, char* cmd) {
 	{
 		// compute new 24bit long from rgb, calc up or down, returns #nnnnnn
 		uint32_t val = rgbtoul(lastRgb);
-		val = (feed[0] == CM_up) ? up(val) : down(val);
+		val = calc(val, (CmdType)feed[0]);
 		ultoa(val, &cmd[1], HEX);
 		cmd[0] = '#';
 		UTIL_PRINTLN(cmd);
 		break;
+
 	}
 	default:
 		UTIL_PRINTLN(F("not a valid feed!"));
@@ -98,40 +129,7 @@ char* LED_RGB::feedHandler(char* feed, char* cmd) {
 	return cmd;
 }
 
-// Pulses red twice per call. Designed to be called in the main loop for running state.
-void LED_RGB::pulse() {
-	// fade to black
-	setRgb({ 0,0,0 });
-
-	// pulses 2x
-	for (uint8_t i = 0; i < 2; i++) {
-
-		// pulse on red
-		uint8_t n = 0;
-		while(n < 255){
-			analogWrite(r, n+=5); // fast fade in
-		}
-
-		while (n > 0) {
-			analogWrite(r, n-=5);
-			delay(FADESPEED); // slower fade out
-		}
-	}
-}
-
-// Sets rgb pins from provided hex str, e.g., #ffffff
-void LED_RGB::setRgb(char* val) {
-	if (!isNull(val) && val[0] == '#') {
-		// set the pointer after # so we can convert to ulong
-		setRgb(ultoRgb(strtoul((const char*)&val[1], NULL, HEX)));
-	}
-}
-
-// Sets rgb pings from provided long value
-void LED_RGB::setRgb(uint32_t val) {
-	setRgb(ultoRgb(val));
-}
-
+// Sets rgb pins from the provided val
 void LED_RGB::setRgb(Rgb val) {
 	Rgb& l = lastRgb;
 
@@ -154,85 +152,71 @@ void LED_RGB::setRgb(Rgb val) {
 
 // Fades pins in a circular list
 void LED_RGB::fade() {
-	// next color in sequence
-	lastNode = lastNode->next;
-	setRgb(lastNode->rgb);
+	cmdExecutor(CM_fade);
 }
 
-// Increases non zero value by MULTI to max
-uint32_t LED_RGB::up(uint32_t val) {
-	uint32_t result = 0;
+// Pulses a color
+void LED_RGB::pulse(uint8_t pin) {
+	// fade to black
+	setRgb({ 0,0,0 });
 
-	// 24bit
-	if (val > 0x00ff00) {
-		result = up(val, 16);
+	// pulses 2x
+	for (uint8_t i = 0; i < 2; i++) {
+
+		// pulse
+		uint8_t n = 0;
+		while (n < 255) {
+			analogWrite(pin, n += 5); // fast fade in
+		}
+
+		while (n > 0) {
+			analogWrite(pin, n -= 5);
+			delay(FADESPEED); // slower fade out
+		}
 	}
-
-	// 16bit
-	if (val > 0xff) {
-		result |= up(val, 8);
-	}
-
-	// 8bit
-	result |= up(val, 0);
-
-	return result;
 }
 
-// Decreases value by MULTI to 0
-uint32_t LED_RGB::down(uint32_t val) {
-	uint32_t result = 0;
-
-	// 24bit
-	if (val > 0x00ff00) {
-		result = down(val, 16);
-	}
-
-	// 16bit
-	if (val > 0xff) {
-		result |= down(val, 8);
-	}
-
-	// 8bit
-	result |= down(val, 0);
-
-	return result;
-}
-
-// Increases a specific byte within the 24bit int by MULTI up to max value
-uint32_t LED_RGB::up(uint32_t val, uint8_t bitshift) {
-	// bit shift supplied val to 8bit, mask
-	uint32_t r = 0;
-	
-	r = (val >> bitshift & 0xff) * MULTI;
-	
-	// constrain to max of 256, shift back
-	r = min(r, 0xff) << bitshift;
-	
-	return r;
-}
-
-// Decreases a specific byte within the 24bit int by MULTI down to 0
-uint32_t LED_RGB::down(uint32_t val, uint8_t bitshift) {
-	// bit shift supplied val to 8bit, mask
-	uint32_t r = 0;
-	
-	r = (val >> bitshift & 0xff) / MULTI;
-
-	// constrain to min of 0, shift back
-	r = max(r, 0x0) << bitshift;
-
-	return r;
+// Pulses last rgb
+void LED_RGB::pulse() {
+	cmdExecutor(CM_pulse);
 }
 
 // Increases brightness
 void LED_RGB::up() {
-	cmdExecutor("U");
+	cmdExecutor(CM_up);
+}
+
+// Increases or decreases each byte within the 24bit int by MULTI
+uint32_t LED_RGB::calc(uint32_t val, CmdType cmd) {
+	Serial.println(val);
+	if (!(cmd == CM_up || cmd == CM_dn)) {
+		return val;
+	}
+
+	uint32_t result = 0;
+
+	// calculates each byte separately
+	for (uint8_t i = 0; i <= 16; i+=8) {
+		uint32_t r = val >> i & 0xff;
+
+		if (cmd == CM_up) {
+			r = round(r * MULTI);
+			r = min(r, 0xff); // 256 max
+		}
+		else { // CM_dn
+			r = round(r / MULTI); // 1 min
+		}
+
+		// shift back and combine
+		result |= r << i;
+	}
+
+	return result; 
 }
 
 // Decreases brightness
 void LED_RGB::down() {
-	cmdExecutor("D");
+	cmdExecutor(CM_dn);
 }
 
 // Gets an RGB value {rr,gg,bb} from the provided long value
@@ -249,12 +233,12 @@ Rgb LED_RGB::ultoRgb(uint32_t val) {
 
 // Converts an rgb to equivalent unsigned long
 uint32_t LED_RGB::rgbtoul(Rgb val) {
-	return (((uint32_t)(val.r)) << 16) | (((uint32_t)(val.g)) << 8) | (uint32_t)(val.b);
+	return ((uint32_t)(val.r) << 16) | ((uint16_t)(val.g) << 8) | val.b;
 }
 
-// creates a new node, adds it to the list
+// Creates a new node, adds it to the list
 void LED_RGB::addNode(Rgb val) {
-	RgbNode *node = new RgbNode { val, NULL };
+	RgbNode *node = new RgbNode{ val, NULL };
 
 	if (lastNode == NULL) {
 		// first node
@@ -268,3 +252,4 @@ void LED_RGB::addNode(Rgb val) {
 		lastNode = node;
 	}
 }
+

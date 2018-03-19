@@ -12,7 +12,7 @@
 
 // operating constants
 #define FADESPEED 5    // millis fade delay
-#define MULTI 1.50     // increase/decrease brightness multiplier
+#define MULTI 1.65     // increase/decrease brightness multiplier
 
 // increase or decrease a by 1 relative to b
 #define tick(a, b) (a == b) ? a : ((a < b) ? a + 1 : a - 1)
@@ -40,6 +40,7 @@ enum CmdType:unsigned char {
 class LED_RGB
 {
 	private:
+		// properties
 		uint8_t r,g,b;
 		Rgb lastRgb;
 		RgbNode *lastNode;
@@ -47,15 +48,13 @@ class LED_RGB
 		void addNode(Rgb val);
 		Rgb ultoRgb(uint32_t val);
 		uint32_t rgbtoul(Rgb val);
-		uint32_t up(uint32_t val, uint8_t bitshift);
-		uint32_t down(uint32_t val, uint8_t bitshift);
-		uint32_t up(uint32_t val);
-		uint32_t down(uint32_t val);
-		void setRgb(uint32_t val);
-		void setRgb(char* val);
+		uint32_t calc(uint32_t val, CmdType cmd);
+		void pulse(uint8_t val);
 	public:
+		// methods
 		void init(uint8_t pinR, uint8_t pinG, uint8_t pinB);
 		void cmdExecutor(char* cmd);
+		void cmdExecutor(CmdType cmd);
 		char* feedHandler(char* val, char* cmd);
 		void setRgb(Rgb val);
 		void pulse();
